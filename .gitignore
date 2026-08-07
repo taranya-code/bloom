@@ -1,0 +1,21 @@
+# Node
+node_modules/
+dist/
+.mastra/
+.mastra-project.json
+*.log
+.DS_Store
+
+# Env files (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# Python (reminder-service)
+reminder-service/__pycache__/
+reminder-service/*.pyc
+reminder-service/.venv/
+reminder-service/venv/
+reminder-service/.pytest_cache/
+reminder-service/tests/__pycache__/
+reminder-service/.ruff_cache/

@@ -1,0 +1,123 @@
+# GCP API Gateway config (OpenAPI 2.0 / Swagger, the format API Gateway
+# requires — not OpenAPI 3.x). Deploy with:
+#
+#   gcloud api-gateway api-configs create bloom-gateway-config \
+#     --api=bloom-gateway --openapi-spec=openapi2-config.yaml \
+#     --project=YOUR_PROJECT_ID --backend-auth-service-account=YOUR_SA_EMAIL
+#
+#   gcloud api-gateway gateways create bloom-gateway \
+#     --api=bloom-gateway --api-config=bloom-gateway-config \
+#     --location=us-central1 --project=YOUR_PROJECT_ID
+#
+# Reference: https://docs.cloud.google.com/api-gateway/docs/oasv2-extensions
+# and https://docs.cloud.google.com/api-gateway/docs/authenticating-users-googleid
+
+swagger: "2.0"
+info:
+  title: bloom-gateway
+  description: >
+    Edge for bloom-core (Mastra). Terminates JWT auth and applies per-user
+    rate limiting before forwarding to the Cloud Run backend (NFR-8.1 /
+    NFR-8.2 in docs/PRD.md). Replace HOST and the x-google-backend address
+    below with your actual deployment values before applying this config.
+  version: 1.0.0
+host: "bloom-gateway.REPLACE_WITH_YOUR_PROJECT_ID.cloud.goog"
+schemes:
+  - https
+produces:
+  - application/json
+consumes:
+  - application/json
+
+securityDefinitions:
+  google_id_token:
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://accounts.google.com"
+    x-google-jwks_uri: "https://www.googleapis.com/oauth2/v3/certs"
+    # Uncomment and set to your OAuth client ID to restrict to a specific
+    # audience. Left unset, API Gateway accepts any JWT whose `aud` claim
+    # is the backend service name (https://SERVICE_NAME).
+    # x-google-audiences: "YOUR-CLIENT-ID"
+
+security:
+  - google_id_token: []
+
+# All requests are proxied to bloom-core's Cloud Run URL. Replace with the
+# real URL from `gcloud run services describe bloom-core --format='value(status.url)'`.
+x-google-backend:
+  address: "https://bloom-core-REPLACE.a.run.app"
+  deadline: 30.0
+
+# Rate limiting (NFR-8.1). "requests" is metered per caller; the limit
+# below is a starting point for a caregiver-facing chat app, not a
+# load-tested production value.
+x-google-management:
+  metrics:
+    - name: "bloom-agent-requests"
+      displayName: "Bloom agent requests"
+      valueType: INT64
+      metricKind: DELTA
+  quota:
+    limits:
+      - name: "bloom-agent-requests-limit"
+        metric: "bloom-agent-requests"
+        unit: "1/min/{project}"
+        values:
+          STANDARD: 60
+
+paths:
+  /api/agents/{agentId}/generate:
+    post:
+      summary: Generate a response from a Bloom agent (bloom, parserAgent, redflagAgent, etc).
+      operationId: generateAgentResponse
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Agent response
+      x-google-quota:
+        metricCosts:
+          bloom-agent-requests: 1
+
+  /api/agents:
+    get:
+      summary: List registered agents (used for the backend connectivity check in web-client/).
+      operationId: listAgents
+      responses:
+        "200":
+          description: Agent list
+      x-google-quota:
+        metricCosts:
+          bloom-agent-requests: 1
+
+  /api/tools/{toolId}/execute:
+    post:
+      summary: >
+        Execute a Bloom tool directly (set_schedule, get_due_medications,
+        mark_medication_taken, add_followup, list_followups,
+        mark_followup_done, run_safety_check, etc). Used by the Medication
+        Schedule and Follow-ups tabs in web-client/, which read/write
+        backend state without going through an agent's LLM loop.
+      operationId: executeTool
+      parameters:
+        - name: toolId
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Tool result
+      x-google-quota:
+        metricCosts:
+          bloom-agent-requests: 1
+
+  # Add further paths here as the web client grows (e.g. memory threads).
+  # API Gateway's OpenAPI 2.0 backend requires each proxied path declared
+  # explicitly — there's no wildcard passthrough for the full Mastra REST
+  # surface, so keep this list in sync with what web-client/public/app.js
+  # actually calls.

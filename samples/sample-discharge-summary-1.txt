@@ -1,0 +1,42 @@
+CITY GENERAL HOSPITAL — DISCHARGE SUMMARY (masked sample for demo/testing)
+
+Patient Name: [REDACTED]        Age/Sex: 68 / Female
+UHID: [REDACTED]                Date of Admission: 02-Aug-2026
+Ward: Cardiology                Date of Discharge: 05-Aug-2026
+
+DIAGNOSIS:
+Acute decompensated heart failure with hypertension, managed medically.
+
+PROCEDURE:
+None (medical management only). Echocardiogram performed on 03-Aug-2026.
+
+MEDICATIONS ON DISCHARGE:
+1. Tab. Furosemide 40mg — 1 tablet every morning, before food. (Small yellow tablet)
+2. Tab. Metoprolol 25mg — 1 tablet twice daily (morning and night), after food. (White round tablet)
+3. Tab. Ramipril 2.5mg — 1 tablet once daily at night, after food. (Small pink capsule)
+4. Tab. Atorvastatin 20mg — 1 tablet once daily at night, after food. (Oval white tablet)
+Continue all medications for 30 days or until reviewed by cardiologist. Do not stop any tablet without consulting the doctor.
+
+DIET AND ACTIVITY:
+- Low salt diet, avoid pickles and papad.
+- Restrict fluid intake to 1.5 litres per day.
+- Light walking permitted; avoid heavy lifting or strenuous exercise for 4 weeks.
+- Weigh yourself every morning; note the weight daily.
+
+WARNING SIGNS — CONTACT HOSPITAL IMMEDIATELY IF:
+- Breathlessness at rest or while lying down
+- Chest pain or tightness
+- Sudden weight gain of more than 2 kg in 2 days
+- Swelling in legs or feet increasing rapidly
+- Fainting or severe dizziness
+
+EXPECTED / NORMAL SYMPTOMS (usually settle on their own):
+- Mild fatigue for the first 1-2 weeks
+- Slight ankle swelling by evening, improving with rest
+- Occasional dry cough
+
+FOLLOW-UP:
+- Cardiology OPD review on 19-Aug-2026, bring this discharge summary and echo report.
+- Repeat blood test (kidney function, electrolytes) 1 week before the review, at any lab.
+
+Discharging Physician: Dr. [REDACTED], MD Cardiology

@@ -1,0 +1,7 @@
+node_modules
+.mastra
+dist
+web-client/public
+public
+package-lock.json
+docs/*.json

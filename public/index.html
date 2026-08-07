@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloom — Post-Discharge Care Companion</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background Glow FX -->
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-container">
+        <span class="logo-icon">🌸</span>
+        <div class="logo-text">
+          <h1>Bloom</h1>
+          <span class="tagline">Post-Discharge Care Companion</span>
+        </div>
+      </div>
+      <div class="backend-badge">
+        <span class="status-dot online"></span>
+        <span id="backend-status-text">Mastra Backend: Port 4111</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <!-- Language Selector -->
+      <div class="lang-selector">
+        <i class="fa-solid fa-language"></i>
+        <select id="lang-select">
+          <option value="en">English (EN)</option>
+          <option value="kn">ಕನ್ನಡ (Kannada)</option>
+          <option value="ta">தமிழ் (Tamil)</option>
+          <option value="hi">हिंदी (Hindi)</option>
+        </select>
+      </div>
+
+      <!-- Patient Pill -->
+      <div class="patient-pill">
+        <i class="fa-solid fa-user-check"></i>
+        <div class="patient-info">
+          <span class="patient-name">Rahul Sharma</span>
+          <span class="patient-meta">Post-Op Appendectomy</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-btn active" data-tab="chat-tab">
+        <i class="fa-solid fa-comments"></i> 💬 Care Companion Chat
+      </button>
+      <button class="nav-btn" data-tab="summary-tab">
+        <i class="fa-solid fa-file-medical"></i> 📋 Discharge Summary
+      </button>
+      <button class="nav-btn" data-tab="meds-tab">
+        <i class="fa-solid fa-pills"></i> 💊 Medication Schedule
+      </button>
+      <button class="nav-btn" data-tab="triage-tab">
+        <i class="fa-solid fa-kit-medical"></i> 🩺 Symptom Triage
+      </button>
+      <button class="nav-btn" data-tab="followup-tab">
+        <i class="fa-solid fa-calendar-check"></i> 📅 Follow-ups
+      </button>
+    </nav>
+
+    <!-- Tab 1: Chat Companion -->
+    <section id="chat-tab" class="tab-content active">
+      <div class="chat-layout">
+        <!-- Left Panel: Context Summary Card -->
+        <aside class="chat-sidebar">
+          <div class="glass-card context-card">
+            <h3><i class="fa-solid fa-notes-medical"></i> Active Context</h3>
+            <div id="active-summary-preview">
+              <div class="summary-badge-row">
+                <span class="badge badge-success"><i class="fa-solid fa-check"></i> Qdrant Vector Store</span>
+                <span class="badge badge-shield"><i class="fa-solid fa-shield-halved"></i> Enkrypt Safety Gate</span>
+              </div>
+              <p class="summary-snippet"><strong>Diagnosis:</strong> Acute Appendicitis (Laparoscopic Appendectomy)</p>
+              <div class="mini-meta">
+                <span><i class="fa-solid fa-capsules"></i> 3 Active Meds</span>
+                <span><i class="fa-solid fa-calendar-day"></i> Next Review: 7 Days</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm btn-full" id="load-sample-btn">
+              <i class="fa-solid fa-file-import"></i> Load Sample Discharge Note
+            </button>
+          </div>
+
+          <div class="glass-card quick-actions-card">
+            <h3><i class="fa-solid fa-bolt"></i> Quick Questions</h3>
+            <div class="action-chips">
+              <button class="chip" data-prompt="Explain my discharge summary simply in Kannada">
+                🗣️ Explain summary in Kannada
+              </button>
+              <button class="chip" data-prompt="What medicines do I take tonight at 9 PM?">
+                🌙 What medicines take tonight?
+              </button>
+              <button class="chip" data-prompt="Doctor stopped the blue tablet from today, update my schedule">
+                🛑 Doctor stopped blue tablet
+              </button>
+              <button class="chip" data-prompt="Amma has slight fever 99.2F, is that normal?">
+                🌡️ Slight fever 99.2°F, normal?
+              </button>
+              <button class="chip" data-prompt="Severe chest pain and heavy breath">
+                🚨 Severe chest pain (Emergency test)
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right Panel: Chat Interface -->
+        <div class="glass-card chat-main">
+          <div class="chat-header">
+            <div class="agent-avatar">🌸</div>
+            <div class="agent-details">
+              <h2>Bloom Care Companion</h2>
+              <p class="agent-subtitle">Mastra Multi-Agent Coordinator • Grounded in Discharge Note</p>
+            </div>
+            <div class="chat-controls">
+              <button class="icon-btn" title="Clear Chat" id="clear-chat-btn"><i class="fa-solid fa-rotate-left"></i></button>
+            </div>
+          </div>
+
+          <!-- Message History -->
+          <div class="chat-messages" id="chat-messages">
+            <div class="message assistant-msg">
+              <div class="msg-avatar">🌸</div>
+              <div class="msg-body">
+                <div class="msg-content">
+                  <p>Namaste! I am <strong>Bloom</strong>, your post-discharge care companion.</p>
+                  <p>I have your discharge instructions loaded. How can I help you or your family today?</p>
+                </div>
+                <div class="msg-meta">
+                  <span class="agent-tag">bloom coordinator</span>
+                  <span class="time">Just now</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trace Indicator Bar -->
+          <div class="trace-bar" id="trace-bar" style="display: none;">
+            <div class="trace-step">
+              <span class="spinner"></span>
+              <span id="trace-text">Grounding with Qdrant vector retrieval...</span>
+            </div>
+          </div>
+
+          <!-- Input Box -->
+          <div class="chat-input-area">
+            <form id="chat-form">
+              <input type="text" id="user-input" placeholder="Type a message or symptom question..." autocomplete="off">
+              <button type="submit" class="btn btn-primary" id="send-btn">
+                <span>Send</span> <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Discharge Summary -->
+    <section id="summary-tab" class="tab-content">
+      <div class="section-grid">
+        <!-- Upload Form -->
+        <div class="glass-card">
+          <h2><i class="fa-solid fa-upload"></i> Upload or Paste Discharge Summary</h2>
+          <p class="section-desc">Parse medical reports into structured JSON grounding context for all specialist agents.</p>
+          
+          <div class="drop-zone" id="drop-zone">
+            <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+            <p>Drag & Drop Discharge Summary Image / PDF here</p>
+            <span class="or-divider">OR PASTE TEXT BELOW</span>
+          </div>
+
+          <textarea id="summary-text-input" rows="8" placeholder="Paste discharge summary text here... e.g.
+Patient Name: Rahul Sharma, Age: 34
+Diagnosis: Acute Appendicitis (Laparoscopic Appendectomy done 04/08/2026)
+Medications:
+1. Tab Paracetamol 650mg - 1 tablet 3 times daily after food for 5 days (white round tablet)
+2. Tab Amoxiclav 625mg - 1 tablet twice daily after food for 7 days (yellow capsule)
+3. Tab Pantoprazole 40mg - 1 tablet morning before food for 7 days
+Warning Signs: High fever (>101F), severe abdominal pain, persistent vomiting, wound discharge.
+Expected Symptoms: Mild pain at incision site, mild fatigue.
+Follow-up: Visit OPD in 7 days for suture check."></textarea>
+
+          <div class="btn-group">
+            <button class="btn btn-primary" id="parse-summary-btn">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Parse & Ground with Mastra Agent
+            </button>
+            <button class="btn btn-secondary" id="fill-sample-btn">
+              <i class="fa-solid fa-lightbulb"></i> Load Sample Text
+            </button>
+          </div>
+        </div>
+
+        <!-- Parsed Results Card -->
+        <div class="glass-card" id="parsed-results-card">
+          <h2><i class="fa-solid fa-circle-check"></i> Parsed Grounding Context</h2>
+          
+          <div class="parsed-content" id="parsed-content">
+            <div class="empty-state">
+              <i class="fa-solid fa-file-circle-question"></i>
+              <p>No discharge summary parsed yet. Click "Load Sample Text" or paste your report on the left.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Medication Schedule -->
+    <section id="meds-tab" class="tab-content">
+      <div class="glass-card">
+        <div class="meds-header-row">
+          <div>
+            <h2><i class="fa-solid fa-pills"></i> Daily Medication Schedule</h2>
+            <p class="section-desc">Managed by <code>medicationAgent</code> with dose timing and visual appearance hints.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="update-med-modal-btn">
+            <i class="fa-solid fa-pen-to-square"></i> Report Doctor Change
+          </button>
+        </div>
+
+        <div class="timeline-container">
+          <!-- Morning -->
+          <div class="time-block">
+            <div class="time-header morning">
+              <i class="fa-solid fa-sun"></i> Morning (8:00 AM)
+            </div>
+            <div class="med-cards" id="morning-meds">
+              <!-- Cards injected dynamically -->
+            </div>
+          </div>
+
+          <!-- Afternoon -->
+          <div class="time-block">
+            <div class="time-header afternoon">
+              <i class="fa-solid fa-cloud-sun"></i> Afternoon (1:00 PM)
+            </div>
+            <div class="med-cards" id="afternoon-meds">
+            </div>
+          </div>
+
+          <!-- Night -->
+          <div class="time-block">
+            <div class="time-header night">
+              <i class="fa-solid fa-moon"></i> Night (9:00 PM)
+            </div>
+            <div class="med-cards" id="night-meds">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Symptom Triage -->
+    <section id="triage-tab" class="tab-content">
+      <div class="section-grid">
+        <div class="glass-card">
+          <h2><i class="fa-solid fa-user-nurse"></i> Quick Red-Flag Symptom Checker</h2>
+          <p class="section-desc">Evaluated by <code>redflagAgent</code>, grounded in Qdrant context & verified by <strong>Enkrypt Medical Safety Policy</strong>.</p>
+          
+          <div class="symptom-input-box">
+            <label for="symptom-input">Describe what the patient is feeling:</label>
+            <textarea id="symptom-input" rows="3" placeholder="e.g. Mild pain around the surgical cut when walking... or High fever and redness at incision..."></textarea>
+            <button class="btn btn-primary" id="check-symptom-btn">
+              <i class="fa-solid fa-stethoscope"></i> Check Symptom Safety
+            </button>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h2><i class="fa-solid fa-shield-heart"></i> Safety Triage Output</h2>
+          <div id="triage-output-card">
+            <div class="empty-state">
+              <i class="fa-solid fa-heart-pulse"></i>
+              <p>Type a symptom on the left to see instant triage and grounding details.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 5: Follow-up Appointments -->
+    <section id="followup-tab" class="tab-content">
+      <div class="glass-card">
+        <h2><i class="fa-solid fa-calendar-days"></i> Review Appointments & Reminders</h2>
+        <p class="section-desc">Tracked by <code>followupAgent</code> + synchronized via A2A with <code>bloom-reminders</code> service.</p>
+        
+        <div class="followup-list" id="followup-list">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Bloom Care Companion • Built with Mastra + Google ADK + Qdrant + Enkrypt Guardrails</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

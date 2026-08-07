@@ -1,0 +1,20 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "F",   # pyflakes
+  "W",   # pycodestyle warnings
+  "I",   # isort (import ordering)
+  "UP",  # pyupgrade (modern syntax)
+  "DTZ", # flake8-datetimez (catch naive datetimes)
+  "B",   # flake8-bugbear
+]
+ignore = [
+  "UP017", # datetime.UTC alias needs py311+; timezone.utc is kept for py3.10 compat
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,10 @@
+{
+  "name": "bloom-web-client",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static caregiver UI for Bloom (plain HTML/CSS/JS, no build step) plus a tiny Node http server to serve it.",
+  "scripts": {
+    "start": "node server-ui.js"
+  }
+}

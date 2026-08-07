@@ -1,0 +1,874 @@
+{
+  "version": "1.0",
+  "diagramId": "1f871eac-10f5-4c0a-8d7e-3efbdbb8bf00",
+  "title": "Architecture Diagram",
+  "nodes": [
+    {
+      "id": "caregiver-web-client",
+      "type": "frontend",
+      "label": "Caregiver Web Client",
+      "generic_name": "Caregiver Web App",
+      "ports": [
+        {
+          "id": "out",
+          "label": "HTTPS Out",
+          "side": "right"
+        },
+        {
+          "id": "in",
+          "label": "Input",
+          "side": "left"
+        }
+      ],
+      "data": {
+        "description": "Caregiver interface for chat, discharge parsing (multimodal), medication management, and symptom triage. Uses Node.js http server on Cloud Run.",
+        "tech": [
+          "HTML/CSS/JS",
+          "Node.js",
+          "Cloud Run"
+        ],
+        "cloud": "GCP"
+      }
+    },
+    {
+      "id": "gemma-3n-fallback",
+      "type": "service",
+      "label": "Gemma 3n Fallback",
+      "generic_name": "On-Device AI Fallback",
+      "ports": [
+        {
+          "id": "out",
+          "label": "Sync Out",
+          "side": "right"
+        },
+        {
+          "id": "in",
+          "label": "Input",
+          "side": "left"
+        }
+      ],
+      "data": {
+        "description": "On-device AI for offline fallback. Syncs via local-storage queue with 'most recent wins' conflict resolution based on session watermarks.",
+        "tech": [
+          "Gemma 3n",
+          "WebNN",
+          "ONNX Runtime Web"
+        ]
+      }
+    },
+    {
+      "id": "api-gateway",
+      "type": "api-gateway",
+      "label": "API Gateway",
+      "generic_name": "API Gateway",
+      "ports": [
+        {
+          "id": "in",
+          "label": "Ingress",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Internal API",
+          "side": "right"
+        },
+        {
+          "id": "left-2",
+          "label": "Left 2",
+          "side": "left"
+        },
+        {
+          "id": "left-3",
+          "label": "Left 3",
+          "side": "left"
+        },
+        {
+          "id": "right-2",
+          "label": "Right 2",
+          "side": "right"
+        },
+        {
+          "id": "right-3",
+          "label": "Right 3",
+          "side": "right"
+        },
+        {
+          "id": "right-4",
+          "label": "Right 4",
+          "side": "right"
+        },
+        {
+          "id": "right-5",
+          "label": "Right 5",
+          "side": "right"
+        },
+        {
+          "id": "right-6",
+          "label": "Right 6",
+          "side": "right"
+        },
+        {
+          "id": "right-7",
+          "side": "right",
+          "label": "Right 7"
+        }
+      ],
+      "data": {
+        "description": "GCP API Gateway validating Google-signed JWTs and enforcing per-minute rate limits. Sole ingress for all clients.",
+        "tech": [
+          "GCP API Gateway",
+          "OpenAPI 2.0"
+        ],
+        "cloud": "GCP"
+      }
+    },
+    {
+      "id": "secret-manager",
+      "type": "service",
+      "label": "Secret Manager",
+      "generic_name": "Secret Manager",
+      "ports": [
+        {
+          "id": "out",
+          "label": "Config Inject",
+          "side": "right"
+        },
+        {
+          "id": "in",
+          "label": "Input",
+          "side": "left"
+        },
+        {
+          "id": "right-2",
+          "label": "Right 2",
+          "side": "right"
+        },
+        {
+          "id": "right-3",
+          "label": "Right 3",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Configuration injector for services. Zero inbound edges at runtime.",
+        "tech": [
+          "GCP Secret Manager"
+        ],
+        "cloud": "GCP"
+      }
+    },
+    {
+      "id": "cloud-kms",
+      "type": "service",
+      "label": "Cloud KMS (CMEK)",
+      "generic_name": "Encryption Key Management",
+      "ports": [],
+      "data": {
+        "description": "Customer-Managed Encryption Keys (CMEK) wrapping Firestore and Qdrant at rest. Represented with zero graph edges by design: an edge from Cloud KMS to Firestore would create a second inbound edge on Firestore, violating the exactly-one-inbound-edge isolation rule. CMEK is instead referenced via the cmek_key_ring metadata field on the Firestore and Qdrant nodes.",
+        "tech": [
+          "GCP Cloud KMS"
+        ],
+        "cloud": "GCP"
+      }
+    },
+    {
+      "id": "bloom-core-service",
+      "type": "service",
+      "label": "Bloom Core (Mastra)",
+      "generic_name": "Orchestration Core",
+      "ports": [
+        {
+          "id": "in",
+          "label": "API In",
+          "side": "left"
+        },
+        {
+          "id": "out-mcp",
+          "label": "MCP Tool Call",
+          "side": "right"
+        },
+        {
+          "id": "out-db",
+          "label": "Data Access",
+          "side": "bottom"
+        },
+        {
+          "id": "out-ai",
+          "label": "AI/Safety Invoc",
+          "side": "right"
+        },
+        {
+          "id": "out-reminders",
+          "label": "A2A Sync",
+          "side": "right"
+        },
+        {
+          "id": "out-hitl",
+          "label": "HITL Escalation",
+          "side": "bottom"
+        },
+        {
+          "id": "right-4",
+          "label": "Right 4",
+          "side": "right"
+        },
+        {
+          "id": "right-5",
+          "label": "Right 5",
+          "side": "right"
+        },
+        {
+          "id": "right-6",
+          "label": "Right 6",
+          "side": "right"
+        },
+        {
+          "id": "right-7",
+          "label": "Right 7",
+          "side": "right"
+        },
+        {
+          "id": "right-8",
+          "label": "Right 8",
+          "side": "right"
+        },
+        {
+          "id": "right-9",
+          "label": "Right 9",
+          "side": "right"
+        },
+        {
+          "id": "left-2",
+          "side": "left",
+          "label": "Left 2"
+        }
+      ],
+      "data": {
+        "description": "Mastra-based coordinator routing to specialist agents. Sole owner of Firestore. Implements multi-device conflict logic and citation grounding.",
+        "tech": [
+          "Node.js",
+          "TypeScript",
+          "Mastra",
+          "Cloud Run"
+        ],
+        "cloud": "GCP"
+      }
+    },
+    {
+      "id": "mcp-tool-server",
+      "type": "service",
+      "label": "MCP Tool Server",
+      "generic_name": "MCP Tool Server",
+      "ports": [
+        {
+          "id": "in",
+          "label": "MCP In",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Standardizes tool access (medication/follow-up) for agents via Model Context Protocol. Runnable standalone over stdio.",
+        "tech": [
+          "MCP",
+          "Node.js"
+        ],
+        "isolated": true
+      }
+    },
+    {
+      "id": "bloom-reminders",
+      "type": "service",
+      "label": "Bloom Reminders (ADK)",
+      "generic_name": "Reminders Service",
+      "ports": [
+        {
+          "id": "in",
+          "label": "A2A In",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        },
+        {
+          "id": "left-2",
+          "side": "left",
+          "label": "Left 2"
+        }
+      ],
+      "data": {
+        "description": "Independent service for medication and appointment reminders. Receives schedules via A2A from Core.",
+        "tech": [
+          "Python",
+          "FastAPI",
+          "Google ADK",
+          "Cloud Run"
+        ],
+        "cloud": "GCP",
+        "isolated": true
+      }
+    },
+    {
+      "id": "qdrant-vector-store",
+      "type": "database",
+      "label": "Qdrant Vector Store",
+      "generic_name": "Vector Database",
+      "ports": [
+        {
+          "id": "in-db",
+          "label": "Vector Ops",
+          "side": "top"
+        },
+        {
+          "id": "in",
+          "label": "Input",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        },
+        {
+          "id": "left-2",
+          "side": "left",
+          "label": "Left 2"
+        }
+      ],
+      "data": {
+        "description": "Vector store for per-session-filtered grounding. Encrypted at rest via Cloud KMS CMEK (see cmek_key_ring). Supports citation lookup.",
+        "tech": [
+          "Qdrant",
+          "CMEK"
+        ],
+        "cmek_key_ring": "projects/bloom-hackathon-2026/locations/us-central1/keyRings/bloom-cmek/cryptoKeys/qdrant-key"
+      }
+    },
+    {
+      "id": "firestore-db",
+      "type": "database",
+      "label": "Firestore DB",
+      "generic_name": "NoSQL Database",
+      "ports": [
+        {
+          "id": "in-db",
+          "label": "State Ops",
+          "side": "top"
+        },
+        {
+          "id": "in",
+          "label": "Input",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        },
+        {
+          "id": "left-2",
+          "side": "left",
+          "label": "Left 2"
+        }
+      ],
+      "data": {
+        "description": "NoSQL database for medication/appointment state. Exactly one inbound edge, from Bloom Core. Encrypted at rest via Cloud KMS CMEK (see cmek_key_ring), represented as node metadata rather than a graph edge to preserve the single-inbound-edge isolation guarantee.",
+        "tech": [
+          "GCP Firestore",
+          "CMEK"
+        ],
+        "cloud": "GCP",
+        "cmek_key_ring": "projects/bloom-hackathon-2026/locations/us-central1/keyRings/bloom-cmek/cryptoKeys/firestore-key"
+      }
+    },
+    {
+      "id": "bigquery-analytics",
+      "type": "database",
+      "label": "BigQuery Analytics",
+      "generic_name": "Analytics Warehouse",
+      "ports": [
+        {
+          "id": "in-audit",
+          "label": "Audit Log In",
+          "side": "top"
+        },
+        {
+          "id": "in",
+          "label": "Input",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Anonymized analytics warehouse for triage justifications, conflict events, and clinical citation audit records.",
+        "tech": [
+          "GCP BigQuery"
+        ],
+        "cloud": "GCP"
+      }
+    },
+    {
+      "id": "vertex-ai-gemini",
+      "type": "service",
+      "label": "Vertex AI / Gemini",
+      "generic_name": "AI Inference Platform",
+      "ports": [
+        {
+          "id": "in-ai",
+          "label": "Inference In",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Production inference path for Gemini 2.5 Flash reasoning and text-embedding-004.",
+        "tech": [
+          "Vertex AI",
+          "Gemini 2.5 Flash"
+        ],
+        "cloud": "GCP",
+        "isolated": true
+      }
+    },
+    {
+      "id": "enkrypt-guardrails",
+      "type": "service",
+      "label": "Enkrypt Guardrails",
+      "generic_name": "AI Safety Guardrails",
+      "ports": [
+        {
+          "id": "in-safety",
+          "label": "Safety Gate In",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Self-hosted in-VPC safety gate for clinical replies. Validates Red-Flag verdicts before delivery.",
+        "tech": [
+          "Enkrypt AI",
+          "Python"
+        ],
+        "isolated": true
+      }
+    },
+    {
+      "id": "cloud-trace",
+      "type": "service",
+      "label": "Cloud Trace (OTel)",
+      "generic_name": "Observability Platform",
+      "ports": [
+        {
+          "id": "in-trace",
+          "label": "Trace In",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Distributed tracing for agent handoffs and LLM calls using OpenTelemetry.",
+        "tech": [
+          "GCP Cloud Trace",
+          "OpenTelemetry"
+        ],
+        "cloud": "GCP",
+        "isolated": true
+      }
+    },
+    {
+      "id": "clinical-on-call-queue",
+      "type": "service",
+      "label": "Clinical On-Call Queue (HITL)",
+      "generic_name": "Human-in-the-Loop Queue",
+      "ports": [
+        {
+          "id": "in-hitl",
+          "label": "Escalation In",
+          "side": "top"
+        },
+        {
+          "id": "in",
+          "label": "Input",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Human-in-the-loop review for RF-1/RF-3 verdicts. Includes a Dead-Letter Log for failed escalations.",
+        "tech": [
+          "GCP Pub/Sub",
+          "Cloud Monitoring"
+        ],
+        "cloud": "GCP",
+        "isolated": true
+      }
+    },
+    {
+      "id": "whatsapp-delivery",
+      "type": "service",
+      "label": "WhatsApp Delivery (Roadmap)",
+      "generic_name": "WhatsApp Integration",
+      "ports": [
+        {
+          "id": "in",
+          "label": "in",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Roadmap: External delivery channel via Meta Cloud API. Visually distinct and not wired into live flow.",
+        "tech": [
+          "Meta Cloud API"
+        ],
+        "isolated": true
+      }
+    },
+    {
+      "id": "google-ai-studio",
+      "type": "service",
+      "label": "Google AI Studio (Dev)",
+      "generic_name": "Prompt Engineering IDE",
+      "ports": [
+        {
+          "id": "in",
+          "label": "in",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Dev-time environment for prototyping CRISPE-structured prompts. Not part of the runtime path.",
+        "tech": [
+          "Google AI Studio"
+        ],
+        "isolated": true
+      }
+    },
+    {
+      "id": "antigravity-dev-env",
+      "type": "service",
+      "label": "Antigravity (Dev)",
+      "generic_name": "Agentic Dev Environment",
+      "ports": [
+        {
+          "id": "in",
+          "label": "in",
+          "side": "left"
+        },
+        {
+          "id": "out",
+          "label": "Output",
+          "side": "right"
+        }
+      ],
+      "data": {
+        "description": "Agentic dev environment for codebase maintenance and requirement-to-code traceability. Not part of the runtime path.",
+        "tech": [
+          "Antigravity AI"
+        ],
+        "isolated": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-web-to-gw",
+      "source": {
+        "nodeId": "caregiver-web-client",
+        "portId": "out"
+      },
+      "target": {
+        "nodeId": "api-gateway",
+        "portId": "in"
+      },
+      "type": "http",
+      "label": "HTTPS (Response + Citation)"
+    },
+    {
+      "id": "edge-gemma-to-gw",
+      "source": {
+        "nodeId": "gemma-3n-fallback",
+        "portId": "out"
+      },
+      "target": {
+        "nodeId": "api-gateway",
+        "portId": "left-2"
+      },
+      "type": "http",
+      "label": "Sync Payload"
+    },
+    {
+      "id": "edge-gw-to-core",
+      "source": {
+        "nodeId": "api-gateway",
+        "portId": "out"
+      },
+      "target": {
+        "nodeId": "bloom-core-service",
+        "portId": "in"
+      },
+      "type": "internal-api",
+      "label": "Internal API (Response + Citation)"
+    },
+    {
+      "id": "edge-core-to-mcp",
+      "source": {
+        "nodeId": "bloom-core-service",
+        "portId": "out-mcp"
+      },
+      "target": {
+        "nodeId": "mcp-tool-server",
+        "portId": "in"
+      },
+      "type": "internal-api",
+      "label": "Tool Access"
+    },
+    {
+      "id": "edge-core-to-reminders",
+      "source": {
+        "nodeId": "bloom-core-service",
+        "portId": "out-ai"
+      },
+      "target": {
+        "nodeId": "bloom-reminders",
+        "portId": "in"
+      },
+      "type": "internal-api",
+      "label": "Schedule Sync"
+    },
+    {
+      "id": "edge-core-to-firestore",
+      "source": {
+        "nodeId": "bloom-core-service",
+        "portId": "out-reminders"
+      },
+      "target": {
+        "nodeId": "firestore-db",
+        "portId": "in"
+      },
+      "type": "database",
+      "label": "State Management"
+    },
+    {
+      "id": "edge-core-to-qdrant",
+      "source": {
+        "nodeId": "bloom-core-service",
+        "portId": "right-4"
+      },
+      "target": {
+        "nodeId": "qdrant-vector-store",
+        "portId": "in"
+      },
+      "type": "database",
+      "label": "Grounding Retrieval"
+    },
+    {
+      "id": "edge-core-to-vertex",
+      "source": {
+        "nodeId": "bloom-core-service",
+        "portId": "right-5"
+      },
+      "target": {
+        "nodeId": "vertex-ai-gemini",
+        "portId": "in-ai"
+      },
+      "type": "internal-api",
+      "label": "Inference"
+    },
+    {
+      "id": "edge-core-to-enkrypt",
+      "source": {
+        "nodeId": "bloom-core-service",
+        "portId": "right-6"
+      },
+      "target": {
+        "nodeId": "enkrypt-guardrails",
+        "portId": "in-safety"
+      },
+      "type": "internal-api",
+      "label": "Safety Gating"
+    },
+    {
+      "id": "edge-core-to-trace",
+      "source": {
+        "nodeId": "bloom-core-service",
+        "portId": "right-7"
+      },
+      "target": {
+        "nodeId": "cloud-trace",
+        "portId": "in-trace"
+      },
+      "type": "internal-api",
+      "label": "OTel Spans"
+    },
+    {
+      "id": "edge-core-to-bq",
+      "source": {
+        "nodeId": "bloom-core-service",
+        "portId": "right-8"
+      },
+      "target": {
+        "nodeId": "bigquery-analytics",
+        "portId": "in"
+      },
+      "type": "database",
+      "label": "Citation & Audit Logs"
+    },
+    {
+      "id": "edge-core-to-hitl",
+      "source": {
+        "nodeId": "bloom-core-service",
+        "portId": "right-9"
+      },
+      "target": {
+        "nodeId": "clinical-on-call-queue",
+        "portId": "in"
+      },
+      "type": "async-event",
+      "label": "RF-1/RF-3 Escalation"
+    },
+    {
+      "id": "edge-sm-to-core",
+      "source": {
+        "nodeId": "secret-manager",
+        "portId": "out"
+      },
+      "target": {
+        "nodeId": "bloom-core-service",
+        "portId": "left-2"
+      },
+      "type": "internal-api",
+      "label": "Config Inject"
+    },
+    {
+      "id": "edge-sm-to-reminders",
+      "source": {
+        "nodeId": "secret-manager",
+        "portId": "right-2"
+      },
+      "target": {
+        "nodeId": "bloom-reminders",
+        "portId": "left-2"
+      },
+      "type": "internal-api",
+      "label": "Config Inject"
+    },
+    {
+      "id": "edge-sm-to-gw",
+      "source": {
+        "nodeId": "secret-manager",
+        "portId": "right-3"
+      },
+      "target": {
+        "nodeId": "api-gateway",
+        "portId": "left-3"
+      },
+      "type": "internal-api",
+      "label": "Config Inject"
+    }
+  ],
+  "groups": [
+    {
+      "children": [
+        "caregiver-web-client",
+        "gemma-3n-fallback"
+      ],
+      "id": "user-layer",
+      "label": "Layer 1: User & Offline Layer"
+    },
+    {
+      "children": [
+        "api-gateway",
+        "secret-manager",
+        "cloud-kms"
+      ],
+      "id": "security-layer",
+      "label": "Layer 2: Edge & Security"
+    },
+    {
+      "children": [
+        "bloom-core-service",
+        "mcp-tool-server",
+        "bloom-reminders"
+      ],
+      "id": "orchestration-layer",
+      "label": "Layer 3: Multi-Agent Orchestration"
+    },
+    {
+      "children": [
+        "qdrant-vector-store",
+        "firestore-db",
+        "bigquery-analytics"
+      ],
+      "id": "data-layer",
+      "label": "Layer 4: Data & Persistence"
+    },
+    {
+      "children": [
+        "vertex-ai-gemini",
+        "enkrypt-guardrails"
+      ],
+      "id": "ai-safety-layer",
+      "label": "Layer 5: AI & Safety Guardrails"
+    },
+    {
+      "children": [
+        "cloud-trace",
+        "clinical-on-call-queue"
+      ],
+      "id": "observability-layer",
+      "label": "Layer 5: Observability & HITL Safety Net"
+    },
+    {
+      "children": [
+        "whatsapp-delivery"
+      ],
+      "id": "external-layer",
+      "label": "Layer 6: External (Roadmap)"
+    },
+    {
+      "children": [
+        "google-ai-studio",
+        "antigravity-dev-env"
+      ],
+      "id": "dev-tooling-layer",
+      "label": "Layer 7: Developer Tooling (Build-Time)"
+    }
+  ],
+  "metadata": {}
+}
