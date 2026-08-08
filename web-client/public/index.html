@@ -320,12 +320,15 @@ Follow-up: Visit OPD in 7 days for suture check."></textarea>
     <p>Bloom Care Companion • Built with Mastra + Google ADK + Qdrant + Enkrypt Guardrails</p>
   </footer>
 
-  <!-- Runtime config: point at the API Gateway in production instead of
-       bloom-core directly (see ../../api-gateway/). This is a plain static
-       file (no build step), so config lives here rather than in an env
-       file baked in at build time. -->
+  <!-- Runtime config: points at the deployed bloom-core backend. Hardcoded here
+       (rather than injected by server-ui.js at request time) so this file can be
+       served by any static host -- Render Static Site, Netlify, Vercel, GitHub
+       Pages, Cloudflare Pages -- with no server process, no cold starts, no sleep.
+       For local dev against a local backend, override before app.js runs, e.g.
+       add <script>window.BLOOM_API_BASE = "http://localhost:4111";</script>
+       above this tag, or run web-client/server-ui.js with BLOOM_API_BASE set. -->
   <script>
-    window.BLOOM_API_BASE = window.BLOOM_API_BASE || "http://localhost:4111";
+    window.BLOOM_API_BASE = window.BLOOM_API_BASE || "https://bloom-173x.onrender.com";
   </script>
   <script src="app.js"></script>
 </body>
